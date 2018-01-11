@@ -1,0 +1,25 @@
+{
+  "name": "form-utilities",
+  "version": "0.0.1",
+  "description": "Front-end form utilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://toolbarthomas@github.com/toolbarthomas/form-utilities.git"
+  },
+  "keywords": [
+    "form",
+    "jquery",
+    "toolbarthomas",
+    "utilities"
+  ],
+  "author": "toolbarthomas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toolbarthomas/form-utilities/issues"
+  },
+  "homepage": "https://github.com/toolbarthomas/form-utilities#readme"
+}
