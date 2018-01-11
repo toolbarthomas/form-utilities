@@ -21,13 +21,13 @@
         $(function() {
             formUtilities({
                 'submitFormClass': false,
-                'stopImmediatePropagation': true,
+                'stopImmediatePropagation': false,
                 'debugMode': true
             });
 
             $('form').on({
                 'submit' : function() {
-                    console.log('Submit');
+                    console.log('Conflict!');
                 }
             })
         });

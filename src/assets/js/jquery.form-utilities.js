@@ -19,6 +19,7 @@
 
     // Private variables
     var FORM_UTILITIES = {};
+    var SUBMIT;
 
     window.formUtilities = function(options) {
 
@@ -65,7 +66,16 @@
             var $form = $(this);
 
             $form.on({
-                submit: function(event) {
+                submit: function(event, callback) {
+
+                    if (callback == null) {
+                        // Prevent submit by default since some browsers blocks javascript after the submit execution
+                        event.preventDefault();
+                    } else {
+                        // Actual submit is happing, block all other script to prevent multiple calls
+                        event.stopImmediatePropagation();
+                        return;
+                    }
 
                     // Prevent Submit if another submit within the current form is in progress.
                     if (submitInProgress($form)) {
@@ -87,6 +97,16 @@
 
                     // Append the submitInProgress flag.
                     $form.data('submitInProgress', true);
+
+                    // Clear any previous timed-out submits
+                    clearTimeout(SUBMIT);
+
+                    // Do the actual submit
+                    SUBMIT = setTimeout(function() {
+
+                        $form.trigger('submit', [true]);
+
+                    }, 100)
                 }
             });
 
