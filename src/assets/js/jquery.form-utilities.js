@@ -4,12 +4,12 @@
  *
  * @param {object} options Options object that can be customized.
  * @param {string} options.form Default selector for the form element
- * @param {string} options.submitFormClass Classname that will be set on $form if submit is.
+ * @param {string|boolean} options.submitFormClass // Adds a custom class to the form elements, no class will be added if the value is false.
  * @param {string} options.submitNotice Show console notice when first submit has been triggered.
  * @param {string} options.submitWarning Show console notice when second submit has been triggered.
  * @param {string} options.submitButtons Selector query for defining specific submit buttons.
  * @param {boolean} options.disableButtons Append disabled property to the submit buttons.
- * @param {string} options.disabledButtonClass Appends a custom class to the submit buttons.
+ * @param {string|boolean} options.disabledButtonClass // Adds a custom class to the submit elements, no class will be added if the value is false.
  * @param {boolean} options.stopImmediatePropagation Prevents other javascript from being executed
  * @param {boolean} options.debugMode Show submit status from the console..
  *
@@ -23,7 +23,7 @@
     window.formUtilities = function(options) {
 
         var default_options = {
-            'form': 'form', // Default selector for the form element
+            'form': 'form',
             'submitFormClass': 'js__form-utilities--submit-in-progress',
             'submitNotice': 'Submit initiated',
             'submitWarning': 'A second submit has been prevented, since another submit is already in progress for the selected form.',
