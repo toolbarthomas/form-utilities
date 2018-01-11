@@ -16,14 +16,20 @@
     </form>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>
     <script src="assets/js/jquery.form-utilities.js"></script>
     <script>
         $(function() {
             formUtilities({
                 'submitClass': 'hallo',
-                'debug_mode': true
+                'stopImmediatePropagation': false,
+                'debugMode': true
             });
+
+            $('form').on({
+                'submit' : function() {
+                    console.log('Submit');
+                }
+            })
         });
 
     </script>

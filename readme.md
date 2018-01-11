@@ -6,12 +6,18 @@ That enables the following features:
 ### Prevents multiple submit
 This script supports the ability to prevent al next submits after the intitial submit is already in progress.
 
+## Setup
+You can get Form Utilities from the src/ folder in the GitHub repository.
+This plugin is written in jQuery and should also be included just before importing **jquery.form-utilities.js**, for example:
+
+```html
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+<script src="assets/js/jquery.form-utilities.js"></script>
+```
 
 
-### Prevent multiple submit
-
-## Initializing Form Utilities
-The form utilities javascript function should be initiated after the document.ready event, for example:
+The form utilities javascript function should be initiated within the document.ready event, for example:
 
 ```javascript
 
@@ -35,7 +41,8 @@ The following options can be customized:
         'submitButtons': ':submit', // Selector query for defining specific submit buttons
         'disableButtons': true, // Append disabled property to the submit buttons
         'disabledButtonClass': 'js__form-utilities__submit--disabled', // Appends a custom class to the submit buttons
-        'debug_mode': false // Show submit status from the console.
+        'stopImmediatePropagation':  // Prevents other javascript from being executed
+        'debugMode': false // Show submit status from the console.
     }
 
     setFormUtilities(options);

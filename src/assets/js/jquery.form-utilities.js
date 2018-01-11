@@ -10,7 +10,8 @@
  * @param {string} options.submitButtons Selector query for defining specific submit buttons.
  * @param {boolean} options.disableButtons Append disabled property to the submit buttons.
  * @param {string} options.disabledButtonClass Appends a custom class to the submit buttons.
- * @param {boolean} options.debug_mode Show submit status from the console..
+ * @param {boolean} options.stopImmediatePropagation Prevents other javascript from being executed
+ * @param {boolean} options.debugMode Show submit status from the console..
  *
  */
 
@@ -29,7 +30,8 @@
             'submitButtons': ':submit',
             'disableButtons': true,
             'disabledButtonClass': 'js__form-utilities__submit--disabled',
-            'debug_mode': false
+            'stopImmediatePropagation': false,
+            'debugMode': false
         };
 
         // Check if the options parameter matches the type OBJECT
@@ -42,7 +44,7 @@
 
         // No options have been defined
         if(options.length === 0) {
-            console.log('No options have been defined. Script can\t continue.');
+            console.log('No options have been defined. Form Utilities can\'t be executed.');
             return;
         }
 
@@ -68,6 +70,10 @@
                     // Prevent Submit if another submit within the current form is in progress.
                     if (submitInProgress($form)) {
                         event.preventDefault();
+                    }
+
+                    if (FORM_UTILITIES.options.stopImmediatePropagation === true) {
+                        event.stopImmediatePropagation();
                     }
 
                     // Show current message
@@ -127,7 +133,7 @@
     // Show current message based on the amount of submit's
     function showSubmitStatus($form) {
 
-        if (FORM_UTILITIES.options.debug_mode == false) {
+        if (FORM_UTILITIES.options.debugMode === false) {
             return;
         }
 
@@ -165,7 +171,7 @@
     function disableSubmitButtons($form) {
 
         // Don't disable buttons if our disableButtons option is false
-        if (FORM_UTILITIES.options.disableButtons == false) {
+        if (FORM_UTILITIES.options.disableButtons === false) {
             return;
         }
 
