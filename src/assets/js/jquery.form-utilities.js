@@ -1,13 +1,35 @@
+/**
+ * @function formUtilities
+ * @description Javascript functions to improve overall form experience.
+ *
+ * @param {object} options Options object that can be customized.
+ * @param {string} options.form Default selector for the form element
+ * @param {string} options.submitFormClass Classname that will be set on $form if submit is.
+ * @param {string} options.submitNotice Show console notice when first submit has been triggered.
+ * @param {string} options.submitWarning Show console notice when second submit has been triggered.
+ * @param {string} options.submitButtons Selector query for defining specific submit buttons.
+ * @param {boolean} options.disableButtons Append disabled property to the submit buttons.
+ * @param {string} options.disabledButtonClass Appends a custom class to the submit buttons.
+ * @param {boolean} options.debug_mode Show submit status from the console..
+ *
+ */
+
 (function (win, doc, $) {
 
     // Private variables
     var FORM_UTILITIES = {};
 
-    window.setFormUtilities = function(options) {
+    window.formUtilities = function(options) {
 
         var default_options = {
-            'submitClass': 'js__form-utilities--submit-in-progress',
-            'disableButtons': true
+            'form': 'form', // Default selector for the form element
+            'submitFormClass': 'js__form-utilities--submit-in-progress',
+            'submitNotice': 'Submit initiated',
+            'submitWarning': 'A second submit has been prevented, since another submit is already in progress for the selected form.',
+            'submitButtons': ':submit',
+            'disableButtons': true,
+            'disabledButtonClass': 'js__form-utilities__submit--disabled',
+            'debug_mode': false
         };
 
         // Check if the options parameter matches the type OBJECT
@@ -24,27 +46,46 @@
             return;
         }
 
-        // Query all form selectors
-        var $forms = $('form');
-
-        // Return if we have no form selectors defined.
-        if($forms.length === 0) {
-            return;
-        }
-
-        // Append forms to FORM_UTILITIES
-        FORM_UTILITIES['forms'] = $forms;
-
         // Append our options to FORM_UTILITIES
         FORM_UTILITIES['options'] = options;
 
+        // Query all form selectors
+        var $forms = $(FORM_UTILITIES.options.form);
+
+        // Return if we have no form selectors defined.
+        if ($forms.length === 0) {
+            return;
+        }
 
         // Iterate between all form selectors
         $forms.each(function() {
 
             var $form = $(this);
 
-            disableDoubleSubmit($form);
+            $form.on({
+                submit: function(event) {
+
+                    // Prevent Submit if another submit within the current form is in progress.
+                    if (submitInProgress($form)) {
+                        event.preventDefault();
+                    }
+
+                    // Show current message
+                    showSubmitStatus($form);
+
+                    // Append submit class
+                    setSubmitFormClass($form);
+
+                    // Disable all submit buttons
+                    disableSubmitButtons($form);
+
+                    // Append the submitInProgress flag.
+                    $form.data('submitInProgress', true);
+
+                    // tmp
+                    event.preventDefault();
+                }
+            });
 
         });
     }
@@ -75,8 +116,6 @@
             prepared_options[key] = value;
         }
 
-        console.log(prepared_options);
-
         // Ensure that we always return an object
         if(typeof prepared_options != 'object') {
             prepared_options = {};
@@ -85,32 +124,73 @@
         return prepared_options;
     }
 
-    // Helper function that prevents double submits on selected current form:
-    // Fire's preventDefault() if the submit's more than one time.
-    // Adds an extra class to the form element for styling purposes
-    // Set each submit button on
-    function disableDoubleSubmit($form) {
+    // Show current message based on the amount of submit's
+    function showSubmitStatus($form) {
 
-        $form.on({
+        if (FORM_UTILITIES.options.debug_mode == false) {
+            return;
+        }
 
-            submit: function(event) {
+        if (submitInProgress($form)) {
+            console.log(FORM_UTILITIES.options.submitWarning);
+        } else {
+            console.log(FORM_UTILITIES.options.submitNotice);
+        }
+    }
 
-                var $this = $(this);
+    // Helper function that adds submitInProgress flag on the current form.
+    function submitInProgress($form) {
 
-                // Prevent double submit
-                if($this.data('submitInProgress') != null) {
-                    event.preventDefault();
-                    console.log('Submit is already in progress!');
-                    return;
-                }
+        // Return true since the current form is submitting
+        if($form.data('submitInProgress') != null) {
+            return true;
+        }
 
-                // Set submitInProgress flag
-                $this.data('submitInProgress', true);
+        // Return false since it's our first submit
+        return false;
+    }
 
-                $this.addClass(FORM_UTILITIES.submitClass);
-            }
-        });
+    // Append submit class defined within options to the form element
+    function setSubmitFormClass($form) {
 
+        // Don't set submit class if our value is false
+        if(typeof FORM_UTILITIES.options.submitFormClass != 'string') {
+            return;
+        }
+
+        $form.addClass(FORM_UTILITIES.options.submitFormClass);
+    }
+
+    // Disable all submit buttons
+    function disableSubmitButtons($form) {
+
+        // Don't disable buttons if our disableButtons option is false
+        if (FORM_UTILITIES.options.disableButtons == false) {
+            return;
+        }
+
+        // Don't continue if a submit is already in progress
+        if (submitInProgress($form)) {
+            return;
+        }
+
+        var submits = $form.find(FORM_UTILITIES.options.submitButtons);
+
+        // Return if we have no submits defined.
+        if(submits.length === 0) {
+            return;
+        }
+
+        // Disable our buttons
+        submits.prop('disabled', true);
+
+        // Check if we have a custom disabled class for our buttons
+        if (typeof FORM_UTILITIES.options.disabledButtonClass != 'string') {
+            return;
+        }
+
+        // Append the disabled class on all submit buttons
+        submits.addClass(FORM_UTILITIES.options.disabledButtonClass);
     }
 
 })(window.jQuery(window), window.jQuery(document), window.jQuery);
