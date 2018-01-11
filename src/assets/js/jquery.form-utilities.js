@@ -87,9 +87,6 @@
 
                     // Append the submitInProgress flag.
                     $form.data('submitInProgress', true);
-
-                    // tmp
-                    event.preventDefault();
                 }
             });
 
